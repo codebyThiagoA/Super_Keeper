@@ -1,9 +1,11 @@
 import pygame as pg
 from objetos import Goalkeeper
+from sprite_sheet import sprite_sheet
 
 pg.init() #Inicia a variavel init, e consequentemente todos os módulos do pygame
-screen = pg.display.set_mode((800, 600)) #Cria a janela do jogo
+screen = pg.display.set_mode((800, 700)) #Cria a janela do jogo
 clock = pg.time.Clock() #Inicia um relógio no jogo
+frame_count = 0
 
 #goleiro
 screen_width = screen.get_width() #Recebe a largura da tela
@@ -23,9 +25,11 @@ while running: #loop principal
     goalkeeper.move(keys, screen_width) #Baseado nas teclas pressionadas, desloca o jogador pra esquerda ou pra direita
 
     screen.fill((0, 128, 0))  #Background verde
-    pg.draw.rect(screen, (0, 0, 255), (goalkeeper.x, goalkeeper.y, goalkeeper.width, 50))  #Desenha um goleiro provisorio azul
+    #pg.draw.rect(screen, (0, 0, 255), (goalkeeper.x, goalkeeper.y, goalkeeper.width, 50))  #Desenha um goleiro provisorio azul
 
+    goalkeeper.draw(screen)
     pg.display.update() #Atualiza na tela as posições dos objtos
-    clock.tick(80)#FPS do game
+    frame_count += 1
+    clock.tick(120)#FPS do game
 
 pg.quit()

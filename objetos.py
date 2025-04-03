@@ -1,5 +1,6 @@
 import pygame as pg
 from abc import ABC
+from sprite_sheet import sprite_sheet
 
 class Positions(ABC): #Classe abstrata para posições
 
@@ -17,6 +18,7 @@ class Goalkeeper(Positions): #Classe do goleiro
         self.width = width  #Largura do goleiro (colisao e limites)
         self.lives = 4  #Vidas iniciais
         self.default_state = (posicao_x, posicao_y, speed, width, 4) #Tupla com o Estado inicial do goleiro
+        self.sprite = pg.transform.scale(sprite_sheet[1][0], (self.width, self.width)) # sprite inicial do goleiro com ajuste de escala do personagem
 
     #convenções
     @property
@@ -51,7 +53,7 @@ class Goalkeeper(Positions): #Classe do goleiro
     #Identificar a bola (função do pygame)
     def check_collision(self, ball_rect):
 
-        goalkeeper_rect = pg.Rect(self.x, self.y, self.width, 50) #teste com retangulo para representar o goleiro
+        goalkeeper_rect = pg.Rect(self.x, self.y, self.width, 100) #teste com retangulo para representar o goleiro
         return goalkeeper_rect.colliderect(ball_rect)
 
     #Perca de vida
@@ -64,3 +66,6 @@ class Goalkeeper(Positions): #Classe do goleiro
     def restart(self):
         
         self.posicao_x, self.posicao_y, self.speed, self.width, self.lives = self.default_state
+
+    def draw(self, screen): #integra a sprite do goleiro
+        screen.blit(self.sprite, (self.x, self.y)) 
