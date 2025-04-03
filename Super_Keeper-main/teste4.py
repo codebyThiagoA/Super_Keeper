@@ -4,7 +4,7 @@ import random
 
 pygame.init()
 
-altura, largura = 800, 600
+altura, largura = 800, 700
 tela = pygame.display.set_mode((largura, altura))
 pygame.display.set_caption("Sistema de Bolas")
 
