@@ -4,14 +4,16 @@ import time
 # Inicializa o Pygame
 pygame.init()
 
-# Definições da tela
-LARGURA, ALTURA = 800, 700
-TELA = pygame.display.set_mode((LARGURA, ALTURA))
-pygame.display.set_caption("Tela Básica do Pygame")
+largura = 800
+altura = 700
+
+TELA = pygame.display.set_mode((largura, altura))
+configurar_tela = (largura, altura)
+pygame.display.set_caption('Super Keeper')
 
 # Carregar imagens da tela inicial
 fundo_inicial = pygame.image.load("designs/Tela_inicial.png")
-fundo_inicial = pygame.transform.scale(fundo_inicial, (LARGURA, ALTURA))
+fundo_inicial = pygame.transform.scale(fundo_inicial, (configurar_tela))
 
 botao_jogar = pygame.image.load("designs/Botao_jogar.png")
 botao_jogar_rect = botao_jogar.get_rect(topleft=(20, 280))
@@ -21,7 +23,7 @@ botao_sair_rect = botao_sair.get_rect(topleft=(20, 410))
 
 # Carregar imagens da tela do jogo
 fundo_jogo = pygame.image.load("designs/Campo.png")
-fundo_jogo = pygame.transform.scale(fundo_jogo, (LARGURA, ALTURA))
+fundo_jogo = pygame.transform.scale(fundo_jogo, (configurar_tela))
 
 # Carregar imagens dos corações
 coracao = pygame.image.load("designs/Coracao.png")
@@ -44,11 +46,11 @@ bola3_img = pygame.transform.scale(bola3_img, (100, 40))
 
 # Carregar imagens da tela de Game Over
 fundo_gameover = pygame.image.load("designs/Gameover.png")
-fundo_gameover = pygame.transform.scale(fundo_gameover, (LARGURA, ALTURA))
+fundo_gameover = pygame.transform.scale(fundo_gameover, (configurar_tela))
 
 botao_reiniciar = pygame.image.load("designs/Botao_jogar_novamente.png")
-botao_reiniciar_rect = botao_reiniciar.get_rect(center=(LARGURA // 2, ALTURA // 2 + 200))
-botao_sair_gameover = botao_sair.get_rect(center=(LARGURA // 2, ALTURA // 2 + 270))
+botao_reiniciar_rect = botao_reiniciar.get_rect(center=(largura // 2, altura // 2 + 200))
+botao_sair_gameover = botao_sair.get_rect(center=(largura // 2, altura // 2 + 270))
 
 # Posições 
 posicoes_coracoes = [(650, 105), (675, 105), (700, 105), (725, 105), (750, 105)]
