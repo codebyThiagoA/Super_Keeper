@@ -7,7 +7,7 @@ pygame.init()
 # Definições da tela
 LARGURA, ALTURA = 800, 700
 TELA = pygame.display.set_mode((LARGURA, ALTURA))
-pygame.display.set_caption("Basketball Score")
+pygame.display.set_caption("Super_Keeper")
 
 # Configurações de layout
 POSICOES_ESTATISTICAS = {
@@ -170,12 +170,12 @@ def tela_jogo():
             if evento.type == pygame.QUIT:
                 return
             if evento.type == pygame.KEYDOWN:
+                '''
                 if evento.key == pygame.K_SPACE and estado['vidas'] > 0:
                     estado['vidas'] -= 1
-                    coracoes_visiveis[estado['vidas']] = False
-                    # Aqui você pode incrementar os contadores das bolas conforme sua lógica
-                    # Exemplo: incrementar bola1 a cada SPACE pressionado
-                    estado['bola1'] += 1
+                    coracoes_visiveis[estado['vidas']] = False'''
+
+                    
 
         if estado['vidas'] == 0:
             tela_gameover(estado['bola1'], estado['bola2'], estado['bola3'], estado['pontos'], tempo_atual)
