@@ -4,13 +4,8 @@ import random
 
 pg.init()
 
-# Configurações da tela
-altura, largura = 700, 800
-tela = pg.display.set_mode((largura, altura))
-pg.display.set_caption("Sistema de Bolas")
 
-branco = (255, 255, 255)
-clock = pg.time.Clock()
+
 
 # Classe base das bolas (modificada para controle de dano)
 class BolaBase:
@@ -21,13 +16,10 @@ class BolaBase:
         self.timer = 0
         self.bolas = []
         
-        try:
-            self.img = pg.image.load(imagem_path).convert_alpha()
-            self.img = pg.transform.scale(self.img, (60, 60))
-        except:
-            self.img = pg.Surface((60, 60), pg.SRCALPHA)
-            cor = (random.randint(50, 255), random.randint(50, 255), random.randint(50, 255))
-            pg.draw.circle(self.img, cor, (30, 30), 30)
+        
+        self.img = pg.image.load(imagem_path).convert_alpha()
+        self.img = pg.transform.scale(self.img, (60, 60))
+       
 
     def velocidade_atual(self, pontos):
         return self.v_base + (self.v_base * pontos / 150)
