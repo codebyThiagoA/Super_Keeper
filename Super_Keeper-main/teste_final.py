@@ -78,7 +78,7 @@ class Bola2(BolaBase):
             velocidade_base=(2.75), 
             dano=2, 
             intervalo_base=567,  # 60 FPS * 7.5 segundos = 450 frames
-            imagem_path="Bola2.png"
+            imagem_path="bola2.png"
         )
 
 class Bola3(BolaBase):
