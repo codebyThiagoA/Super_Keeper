@@ -1,7 +1,14 @@
 import pygame
 import sys
 import random
+import os
 
+# Mostra o diretório atual e lista os arquivos
+print("DIRETÓRIO ATUAL:", os.getcwd())
+print("ARQUIVOS NA PASTA:")
+for arquivo in os.listdir():
+    print(" -", arquivo)
+    
 pygame.init()
 
 altura, largura = 800, 700
@@ -69,7 +76,7 @@ class Bola1(BolaBase):
             velocidade_base=1.25, 
             dano=1, 
             intervalo_base=254,  # 60 FPS * 3 segundos = 180 frames
-            imagem_path="Bola1.png"
+            imagem_path="Bola1"
         )
 
 class Bola2(BolaBase):
@@ -78,7 +85,7 @@ class Bola2(BolaBase):
             velocidade_base=(2.75), 
             dano=2, 
             intervalo_base=567,  # 60 FPS * 7.5 segundos = 450 frames
-            imagem_path="bola2.png"
+            imagem_path="bola2"
         )
 
 class Bola3(BolaBase):
@@ -87,7 +94,7 @@ class Bola3(BolaBase):
             velocidade_base=3.84, 
             dano=3, 
             intervalo_base=823,  # 60 FPS * 10 segundos = 600 frames
-            imagem_path="Bola3.png"
+            imagem_path="Bola3"
         )
 # Instanciar bolas
 bola1 = Bola1()
