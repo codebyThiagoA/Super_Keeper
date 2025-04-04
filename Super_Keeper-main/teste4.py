@@ -4,7 +4,7 @@ import random
 
 pygame.init()
 
-altura, largura = 800, 600
+altura, largura = 700,800
 tela = pygame.display.set_mode((largura, altura))
 pygame.display.set_caption("Sistema de Bolas")
 
@@ -72,28 +72,28 @@ class BolaBase:
 class Bola1(BolaBase):
     def __init__(self):
         super().__init__(
-            velocidade_base=2, 
+            velocidade_base=1.25, 
             dano=1, 
             intervalo_base=254,  # 60 FPS * 3 segundos = 180 frames
-            imagem_path="bola1.png"
+            imagem_path="Bola1.png"
         )
 
 class Bola2(BolaBase):
     def __init__(self):
         super().__init__(
-            velocidade_base=(3), 
+            velocidade_base=(2.3), 
             dano=2, 
             intervalo_base=567,  # 60 FPS * 7.5 segundos = 450 frames
-            imagem_path="bola2.png"
+            imagem_path="Bola2.png"
         )
 
 class Bola3(BolaBase):
     def __init__(self):
         super().__init__(
-            velocidade_base=4, 
+            velocidade_base=3.4, 
             dano=3, 
             intervalo_base=823,  # 60 FPS * 10 segundos = 600 frames
-            imagem_path="bola3.png"
+            imagem_path="Bola3.png"
         )
 # Instanciar bolas
 bola1 = Bola1()
