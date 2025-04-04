@@ -20,6 +20,12 @@ while vida > 0 and rodando:
             if goalkeeper.check_collision(b["rect"]):
                 pontos += bola.dano * 10
                 bola.bolas.remove(b)
+                if b=="bola1":
+                    qtd_bola1+=1
+                elif b=="bola2":
+                    qtd_bola2+=1
+                elif b=="bola3":
+                    qtd_bola3+=1
         
         # Atualiza posições e acumula dano
         dano_total += bola.atualizar(pontos)

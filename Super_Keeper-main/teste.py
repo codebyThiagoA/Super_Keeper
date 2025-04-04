@@ -4,23 +4,26 @@ import random
 
 pg.init()
 
+# Configurações da tela
+altura, largura = 700, 800
+tela = pg.display.set_mode((largura, altura))
+pg.display.set_caption("Sistema de Bolas")
 
-
+branco = (255, 255, 255)
+clock = pg.time.Clock()
 
 # Classe base das bolas (modificada para controle de dano)
 class BolaBase:
-    def __init__(self, velocidade_base, dano, intervalo_base, imagem_path):
+    def __init__(self, velocidade_base, dano, intervalo_base, imagem_path, ):
         self.v_base = velocidade_base
         self.intervalo_base = intervalo_base
         self.dano = dano
         self.timer = 0
         self.bolas = []
         
-        
         self.img = pg.image.load(imagem_path).convert_alpha()
         self.img = pg.transform.scale(self.img, (60, 60))
-       
-
+        
     def velocidade_atual(self, pontos):
         return self.v_base + (self.v_base * pontos / 150)
 
@@ -36,7 +39,6 @@ class BolaBase:
     def atualizar(self, pontos):
         self.timer += 1
         dano_causado = 0
-        
         # Spawn de novas bolas
         if self.timer >= self.intervalo_atual(pontos):
             self.bolas.append(self.spawn())
@@ -95,6 +97,9 @@ bolas = [bola1, bola2, bola3]
 goalkeeper = Goalkeeper(largura // 2 - 50, 600, 5, 100)
 pontos = 0
 vida = 5
+qtd_bola1=0
+qtd_bola2=0
+qtd_bola3=0
 
 # Loop principal corrigido
 rodando = True
@@ -118,6 +123,12 @@ while vida > 0 and rodando:
             if goalkeeper.check_collision(b["rect"]):
                 pontos += bola.dano * 10
                 bola.bolas.remove(b)
+                if b=="bola1":
+                    qtd_bola1+=1
+                elif b=="bola2":
+                    qtd_bola2+=1
+                elif b=="bola3":
+                    qtd_bola3+=1
         
         # Atualiza posições e acumula dano
         dano_total += bola.atualizar(pontos)
