@@ -19,15 +19,11 @@ class BolaBase:
         self.timer = 0
         self.bolas = []
 
-        # Carrega imagem ou cria uma bola colorida se não encontrar
-        try:
-            self.img = pygame.image.load(imagem_path).convert_alpha()
-            self.img = pygame.transform.scale(self.img, (60, 60))
-        except:
-            self.img = pygame.Surface((60, 60), pygame.SRCALPHA)
-            cor = (random.randint(50, 255), random.randint(50, 255), random.randint(50, 255))
-            pygame.draw.circle(self.img, cor, (30, 30), 30)
-
+        # Carrega imagem da bola
+        
+        self.img = pygame.image.load(imagem_path).convert_alpha()
+        self.img = pygame.transform.scale(self.img, (60, 60))
+        
     def velocidade_atual(self, pontos):
         return self.v_base + (self.v_base * pontos / 150)
 
@@ -74,7 +70,7 @@ class Bola1(BolaBase):
         super().__init__(
             velocidade_base=1.25, 
             dano=1, 
-            intervalo_base=254,  # 60 FPS * 3 segundos = 180 frames
+            intervalo_base=254,  # 60 FPS * 4.23 segundos = 254 frames
             imagem_path="Bola1.png"
         )
 
@@ -83,7 +79,7 @@ class Bola2(BolaBase):
         super().__init__(
             velocidade_base=(2.3), 
             dano=2, 
-            intervalo_base=567,  # 60 FPS * 7.5 segundos = 450 frames
+            intervalo_base=567,  # 60 FPS * 9.45 segundos = 567 frames
             imagem_path="Bola2.png"
         )
 
@@ -92,45 +88,6 @@ class Bola3(BolaBase):
         super().__init__(
             velocidade_base=3.4, 
             dano=3, 
-            intervalo_base=823,  # 60 FPS * 10 segundos = 600 frames
+            intervalo_base=823,  # 60 FPS *  13.72 segundos = 823 frames
             imagem_path="Bola3.png"
         )
-# Instanciar bolas
-bola1 = Bola1()
-bola2 = Bola2()
-bola3 = Bola3()
-
-pontos = 0
-rodando = True
-
-while rodando:
-    clock.tick(60)
-
-    for evento in pygame.event.get():
-        if evento.type == pygame.QUIT:
-            rodando = False
-
-    # Atualização
-    bola1.atualizar(pontos)
-    bola2.atualizar(pontos)
-    bola3.atualizar(pontos)
-
-    # Verificar saídas (aumenta pontos quando bolas saem)
-    for _ in bola1.verificar_saidas() + bola2.verificar_saidas() + bola3.verificar_saidas():
-        pontos += 1
-
-    # Desenhar
-    tela.fill(branco)
-    bola1.desenhar(tela)
-    bola2.desenhar(tela)
-    bola3.desenhar(tela)
-    
-    # Mostrar pontos
-    fonte = pygame.font.SysFont(None, 36)
-    texto_pontos = fonte.render(f"Pontos: {pontos}", True, (0, 0, 0))
-    tela.blit(texto_pontos, (10, 10))
-    
-    pygame.display.flip()
-
-pygame.quit()
-sys.exit()
