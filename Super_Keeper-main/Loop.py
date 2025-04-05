@@ -1,4 +1,7 @@
-# Loop principal corrigido
+import pygame as pg
+from objetos import BolaBase, Goalkeeper, largura, altura, goalkeeper, bolas, pontos, vida, qtd_bola1, qtd_bola2, qtd_bola3
+
+
 rodando = True
 while vida > 0 and rodando:
     clock.tick(60)
@@ -34,16 +37,18 @@ while vida > 0 and rodando:
     vida -= dano_total
 
     # Renderização
-    tela.fill(branco)
+    '''tela.fill(branco)
     for bola in bolas:
-        bola.desenhar(tela)
-    
-    # Desenha goleiro
-    pg.draw.rect(tela, (0, 0, 255), pg.Rect(goalkeeper.x, goalkeeper.y, goalkeeper.width, 100))
-    
+        bola.desenhar(tela)'''
+
+    tela.blit(goalkeeper.img, (goalkeeper.x, goalkeeper.y))     
+        
     # UI
     fonte = pg.font.SysFont(None, 36)
     texto = fonte.render(f"Pontos: {pontos}  Vida: {vida}", True, (0, 0, 0))
     tela.blit(texto, (10, 10))
     
     pg.display.flip()
+
+pg.quit()
+sys.exit()

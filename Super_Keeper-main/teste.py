@@ -4,13 +4,6 @@ import random
 
 pg.init()
 
-# Configurações da tela
-altura, largura = 700, 800
-tela = pg.display.set_mode((largura, altura))
-pg.display.set_caption("Sistema de Bolas")
-
-branco = (255, 255, 255)
-clock = pg.time.Clock()
 
 # Classe base das bolas (modificada para controle de dano)
 class BolaBase:
