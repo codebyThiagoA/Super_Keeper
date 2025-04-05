@@ -14,7 +14,7 @@ clock = pg.time.Clock()
 
 # Classe base das bolas (modificada para controle de dano)
 class BolaBase:
-    def __init__(self, velocidade_base, dano, intervalo_base, imagem_path, ):
+    def __init__(self, velocidade_base, dano, intervalo_base, imagem_path):
         self.v_base = velocidade_base
         self.intervalo_base = intervalo_base
         self.dano = dano
@@ -64,12 +64,16 @@ class BolaBase:
 
 # Classe do goleiro mantida
 class Goalkeeper:
-    def __init__(self, posicao_x, posicao_y, speed, width):
+    def __init__(self, posicao_x, posicao_y, speed, width, imagem_path):
         self.posicao_x = posicao_x
         self.posicao_y = posicao_y
         self.speed = speed
         self.width = width
-        self.lives = 4
+        self.lives = 5
+
+        self.img = pg.image.load(imagem_path).convert_alpha()
+        self.img = pg.transform.scale(self.img, (self.width, 100))  
+        
 
     @property
     def x(self):
@@ -94,7 +98,7 @@ bola1 = BolaBase(1.75, 1, 254, "Bola1.png")
 bola2 = BolaBase(2.3, 2, 567, "Bola2.png")
 bola3 = BolaBase(2.8, 3, 823, "Bola3.png")
 bolas = [bola1, bola2, bola3]
-goalkeeper = Goalkeeper(largura // 2 - 50, 600, 5, 100)
+goalkeeper = Goalkeeper(largura // 2 - 50, 600, 5, 100, "Goleiro_1.png")
 pontos = 0
 vida = 5
 qtd_bola1=0
@@ -140,10 +144,9 @@ while vida > 0 and rodando:
     tela.fill(branco)
     for bola in bolas:
         bola.desenhar(tela)
-    
-    # Desenha goleiro
-    pg.draw.rect(tela, (0, 0, 255), pg.Rect(goalkeeper.x, goalkeeper.y, goalkeeper.width, 100))
-    
+
+    tela.blit(goalkeeper.img, (goalkeeper.x, goalkeeper.y))     
+        
     # UI
     fonte = pg.font.SysFont(None, 36)
     texto = fonte.render(f"Pontos: {pontos}  Vida: {vida}", True, (0, 0, 0))
