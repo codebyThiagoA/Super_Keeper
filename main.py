@@ -34,6 +34,28 @@ def carregar_imagem(caminho, escala=None):
         return pygame.transform.scale(imagem, escala)
     return imagem
 
+som_tela_inicial = pygame.mixer.Sound('audio/som_tela_inicial.wav')
+som_estadio = 'audio/som_estadio.mp3'
+som_perda_vida = pygame.mixer.Sound('audio/som_perda_vida.wav')
+som_defesa = pygame.mixer.Sound('audio/som_defesa.wav')
+som_derrota = pygame.mixer.Sound('audio/som_derrota.wav')
+
+
+def tocar_som_tela_inicial():
+    som_tela_inicial.play()
+def tocar_som_estadio():
+    pygame.mixer.music.load(som_estadio)
+    pygame.mixer.music.play(-1)  # Loop infinito
+def parar_som_estadio():
+    pygame.mixer.music.stop()
+def tocar_som_perda_vida():
+    som_perda_vida.play()
+def tocar_som_defesa():
+    som_defesa.play()
+def tocar_som_derrota():
+    som_derrota.play()
+
+    
 fundo_inicial = carregar_imagem("designs/Tela_inicial.png", (LARGURA, ALTURA))
 fundo_jogo = carregar_imagem("designs/Campo.png", (LARGURA, ALTURA))
 fundo_gameover = carregar_imagem("designs/Gameover.png", (LARGURA, ALTURA))
@@ -141,7 +163,6 @@ def tela_gameover(bola1, bola2, bola3, score, tempo):
         {'texto': f"{tempo_formatado}", 'fonte': fonte_tempo_score, 'pos': POSICOES_ESTATISTICAS['tempo'], 'cor': (255, 255, 255)},
         {'texto': f"{total_bolas}", 'fonte': fonte_total_bolas, 'pos': POSICOES_ESTATISTICAS['total'], 'cor': (255, 255, 255)}
     ]
-
     while rodando:
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
@@ -153,7 +174,6 @@ def tela_gameover(bola1, bola2, bola3, score, tempo):
                 if botao_sair_gameover_rect.collidepoint(evento.pos):
                     pygame.quit()
                     return
-
         TELA.blit(fundo_gameover, (0, 0))
         for elemento in elementos:
             texto = elemento['fonte'].render(elemento['texto'], True, elemento['cor'])
@@ -174,10 +194,13 @@ def tela_jogo():
     bolas = [bola1, bola2, bola3]
     goalkeeper = Goalkeeper(LARGURA // 2 - 50, 600, 8, 100, "Goleiro_1.png")
 
+    pygame.mixer.music.set_volume(0.47) 
+    tocar_som_estadio()
     while True:
         tempo_atual = int(time.time() - inicio_tempo)
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
+                parar_som_estadio()
                 return
 
         keys = pygame.key.get_pressed()
@@ -187,6 +210,7 @@ def tela_jogo():
         for bola in bolas:
             for b in bola.bolas[:]:
                 if goalkeeper.check_collision(b["rect"]):
+                    tocar_som_defesa()  
                     estado['pontos'] += bola.dano * 10
                     bola.bolas.remove(b)
                     if bola == bola1:
@@ -197,8 +221,13 @@ def tela_jogo():
                         estado['bola3'] += 1
             dano_total += bola.atualizar(estado['pontos'])
 
+        if dano_total > 0:
+            tocar_som_perda_vida()  # Tocar som de perda de vida
+
         estado['vidas'] -= dano_total
         if estado['vidas'] <= 0:
+            tocar_som_derrota()  # Tocar som de derrota
+            parar_som_estadio()  # Parar o som do estádio ao sair da tela de jogo
             tela_gameover(estado['bola1'], estado['bola2'], estado['bola3'], estado['pontos'], tempo_atual)
             return
         for i in range(5):
@@ -233,15 +262,22 @@ def tela_jogo():
         clock.tick(60)
 
 def tela_inicial():
+    som_tocou = False  # Variável para controlar se o som já foi tocado
     while True:
         for evento in pygame.event.get():
+            if not som_tocou:
+                tocar_som_tela_inicial()  # Toca o som da tela inicial apenas uma vez
+                som_tocou = True
             if evento.type == pygame.QUIT:
+                pygame.mixer.stop()  # Para todos os sons
                 pygame.quit()
                 return
             if evento.type == pygame.MOUSEBUTTONDOWN:
                 if botao_jogar_rect.collidepoint(evento.pos):
+                    pygame.mixer.stop()  # Para o som ao iniciar o jogo
                     tela_jogo()
                 if botao_sair_rect.collidepoint(evento.pos):
+                    pygame.mixer.stop()  # Para o som ao sair
                     pygame.quit()
                     return
         TELA.blit(fundo_inicial, (0, 0))
