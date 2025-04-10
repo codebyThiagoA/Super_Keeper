@@ -15,10 +15,10 @@ clock = pygame.time.Clock()
 
 # Constantes
 POSICOES_ESTATISTICAS = {
-    'bola1': (325, 480), 'bola2': (455, 480), 'bola3': (585, 480),
-    'tempo': (390, 400), 'score': (570, 400), 'total': (465, 300)
+    'bola1': (250, 480), 'bola2': (379, 480), 'bola3': (505, 480), 'coracao': (615, 480), 
+    'tempo': (370, 400), 'score': (590, 400), 'total': (465, 300)
 }
-TAMANHOS_FONTES = {'total_bolas': 70, 'tempo/score': 60, 'bolas': 45}
+TAMANHOS_FONTES = {'total_bolas': 70, 'tempo/score': 60, 'bolas': 45, 'coracao': 45}
 posicoes_coracoes = [(650, 105), (675, 105), (700, 105), (725, 105), (750, 105)]
 contadores = {
     'posicoes': {
@@ -58,7 +58,7 @@ def tocar_som_derrota():
     
 fundo_inicial = carregar_imagem("designs/Tela_inicial.png", (LARGURA, ALTURA))
 fundo_jogo = carregar_imagem("designs/Campo.png", (LARGURA, ALTURA))
-fundo_gameover = carregar_imagem("designs/Gameover.png", (LARGURA, ALTURA))
+fundo_gameover = carregar_imagem("designs/gameover.png", (LARGURA, ALTURA))
 botao_jogar = carregar_imagem("designs/Botao_jogar.png")
 botao_sair = carregar_imagem("designs/Botao_sair.png")
 botao_reiniciar = carregar_imagem("designs/Botao_jogar_novamente.png")
@@ -182,10 +182,25 @@ class RecuperarCoracao:
         for c in self.coracoes:
             tela.blit(c["img"], c["rect"])
 
+def tela_intermediaria():
+    fundo_intermediario = carregar_imagem("designs/Tela_intermediaria.png", (LARGURA, ALTURA))
+    while True:
+        for evento in pygame.event.get():
+            pygame.mixer.music.set_volume(0.67) 
+            tocar_som_estadio()
+            if evento.type == pygame.QUIT:
+                pygame.quit()
+                return
+            if evento.type == pygame.KEYDOWN and evento.key == pygame.K_SPACE:
+                return  # Sai da tela intermediária e continua para o jogo
+        TELA.blit(fundo_intermediario, (0, 0))
+        pygame.display.flip()
+
 # Funções de tela
-def tela_gameover(bola1, bola2, bola3, score, tempo):
+def tela_gameover(bola1, bola2, bola3, coracao, score, tempo):
     rodando = True
     fonte_total_bolas = pygame.font.Font(None, TAMANHOS_FONTES['total_bolas'])
+    fonte_coracao = pygame.font.Font(None, TAMANHOS_FONTES['coracao'])
     fonte_tempo_score = pygame.font.Font(None, TAMANHOS_FONTES['tempo/score'])
     fonte_bolas = pygame.font.Font(None, TAMANHOS_FONTES['bolas'])
     tempo_formatado = f"{tempo} s"
@@ -195,6 +210,7 @@ def tela_gameover(bola1, bola2, bola3, score, tempo):
         {'texto': f"{bola1}", 'fonte': fonte_bolas, 'pos': POSICOES_ESTATISTICAS['bola1'], 'cor': (255, 255, 255)},
         {'texto': f"{bola2}", 'fonte': fonte_bolas, 'pos': POSICOES_ESTATISTICAS['bola2'], 'cor': (255, 255, 255)},
         {'texto': f"{bola3}", 'fonte': fonte_bolas, 'pos': POSICOES_ESTATISTICAS['bola3'], 'cor': (255, 255, 255)},
+        {'texto': f"{coracao}", 'fonte': fonte_coracao, 'pos': POSICOES_ESTATISTICAS['coracao'], 'cor': (255, 255, 255)},
         {'texto': f"{score}", 'fonte': fonte_tempo_score, 'pos': POSICOES_ESTATISTICAS['score'], 'cor': (255, 255, 255)},
         {'texto': f"{tempo_formatado}", 'fonte': fonte_tempo_score, 'pos': POSICOES_ESTATISTICAS['tempo'], 'cor': (255, 255, 255)},
         {'texto': f"{total_bolas}", 'fonte': fonte_total_bolas, 'pos': POSICOES_ESTATISTICAS['total'], 'cor': (255, 255, 255)}
@@ -223,7 +239,7 @@ def tela_jogo():
     global coracoes_visiveis
     coracoes_visiveis = [True] * 5
     inicio_tempo = time.time()
-    estado = {'pontos': 0, 'bola1': 0, 'bola2': 0, 'bola3': 0, 'vidas': 5}
+    estado = {'pontos': 0, 'bola1': 0, 'bola2': 0, 'bola3': 0, 'coracao':0, 'vidas': 5}
     bola1 = BolaBase(1.75, 1, 254, "Bola1.png")
     bola2 = BolaBase(2.3, 2, 567, "Bola2.png")
     bola3 = BolaBase(2.8, 3, 823, "Bola3.png")
@@ -231,7 +247,7 @@ def tela_jogo():
     bolas = [bola1, bola2, bola3]
     goalkeeper = Goalkeeper(LARGURA // 2 - 50, 600, 8, 100, "Goleiro_1.png")
 
-    pygame.mixer.music.set_volume(0.47) 
+    pygame.mixer.music.set_volume(0.67) 
     tocar_som_estadio()
     while True:
         tempo_atual = int(time.time() - inicio_tempo)
@@ -265,6 +281,8 @@ def tela_jogo():
                 if estado['vidas'] < 5:  # Limite máximo de vidas
                     estado['vidas'] += 1
                     coracoes_visiveis[estado['vidas'] - 1] = True
+                    estado['coracao'] += 1
+                    # Tocar som de ganhar vida]
                     pygame.mixer.Sound('audio/som_ganhar vida.wav').play() # Tocar som de ganhar vida
                 recuperar_coracao.coracoes.remove(c)
 
@@ -275,7 +293,7 @@ def tela_jogo():
         if estado['vidas'] <= 0:
             tocar_som_derrota()  # Tocar som de derrota
             parar_som_estadio()  # Parar o som do estádio ao sair da tela de jogo
-            tela_gameover(estado['bola1'], estado['bola2'], estado['bola3'], estado['pontos'], tempo_atual)
+            tela_gameover(estado['bola1'], estado['bola2'], estado['bola3'],estado['coracao'], estado['pontos'], tempo_atual)
             return
         for i in range(5):
             coracoes_visiveis[i] = i < estado['vidas']
@@ -323,7 +341,8 @@ def tela_inicial():
             if evento.type == pygame.MOUSEBUTTONDOWN:
                 if botao_jogar_rect.collidepoint(evento.pos):
                     pygame.mixer.stop()  # Para o som ao iniciar o jogo
-                    tela_jogo()
+                    tela_intermediaria()  # Chama a tela intermediária
+                    tela_jogo()  # Inicia o jogo
                 if botao_sair_rect.collidepoint(evento.pos):
                     pygame.mixer.stop()  # Para o som ao sair
                     pygame.quit()
