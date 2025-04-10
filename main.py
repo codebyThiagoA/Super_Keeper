@@ -145,6 +145,42 @@ class Goalkeeper:
     def check_collision(self, ball_rect):
         goalkeeper_rect = pygame.Rect(self.x, self.y, self.width, 100)
         return goalkeeper_rect.colliderect(ball_rect)
+    
+class RecuperarCoracao:
+    def __init__(self, velocidade_base, intervalo_base, imagem_path):
+        self.v_base = velocidade_base
+        self.intervalo_base = intervalo_base
+        self.timer = 0
+        self.coracoes = []
+        self.img = carregar_imagem(imagem_path, (40, 40))  # Ajuste o tamanho conforme necessário
+
+    def velocidade_atual(self, pontos):
+        return self.v_base + (self.v_base * pontos / 150)
+
+    def intervalo_atual(self, pontos):
+        return max(10, int(self.intervalo_base - (pontos / 10)))
+
+    def spawn(self):
+        rect = self.img.get_rect()
+        rect.x = random.randint(0, LARGURA - rect.width)
+        rect.y = -rect.height
+        return {"img": self.img, "rect": rect}
+
+    def atualizar(self, pontos):
+        self.timer += 1
+        if self.timer >= self.intervalo_atual(pontos):
+            self.coracoes.append(self.spawn())
+            self.timer = 0
+        novas_coracoes = []
+        for c in self.coracoes:
+            c["rect"].y += self.velocidade_atual(pontos)
+            if c["rect"].top <= ALTURA:
+                novas_coracoes.append(c)
+        self.coracoes = novas_coracoes
+
+    def desenhar(self, tela):
+        for c in self.coracoes:
+            tela.blit(c["img"], c["rect"])
 
 # Funções de tela
 def tela_gameover(bola1, bola2, bola3, score, tempo):
@@ -191,6 +227,7 @@ def tela_jogo():
     bola1 = BolaBase(1.75, 1, 254, "Bola1.png")
     bola2 = BolaBase(2.3, 2, 567, "Bola2.png")
     bola3 = BolaBase(2.8, 3, 823, "Bola3.png")
+    recuperar_coracao = RecuperarCoracao(2.0, 1000, "designs/recuperar_coracao.png")
     bolas = [bola1, bola2, bola3]
     goalkeeper = Goalkeeper(LARGURA // 2 - 50, 600, 8, 100, "Goleiro_1.png")
 
@@ -221,6 +258,16 @@ def tela_jogo():
                         estado['bola3'] += 1
             dano_total += bola.atualizar(estado['pontos'])
 
+        # Atualizar e verificar colisão com corações
+        recuperar_coracao.atualizar(estado['pontos'])
+        for c in recuperar_coracao.coracoes[:]:
+            if goalkeeper.check_collision(c["rect"]):
+                if estado['vidas'] < 5:  # Limite máximo de vidas
+                    estado['vidas'] += 1
+                    coracoes_visiveis[estado['vidas'] - 1] = True
+                    pygame.mixer.Sound('audio/som_ganhar vida.wav').play() # Tocar som de ganhar vida
+                recuperar_coracao.coracoes.remove(c)
+
         if dano_total > 0:
             tocar_som_perda_vida()  # Tocar som de perda de vida
 
@@ -236,6 +283,7 @@ def tela_jogo():
         TELA.blit(fundo_jogo, (0, 0))
         for bola in bolas:
             bola.desenhar(TELA)
+        recuperar_coracao.desenhar(TELA)  # Desenhar os corações
         TELA.blit(goalkeeper.img, (goalkeeper.x, goalkeeper.y))
         for i, pos in enumerate(posicoes_coracoes):
             TELA.blit(coracao if coracoes_visiveis[i] else coracao_cinza, pos)
