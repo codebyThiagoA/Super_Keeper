@@ -1,27 +1,16 @@
 import pygame
 import time
 import random  
-from main import LARGURA, ALTURA, TAMANHOS_FONTES, POSICOES_ESTATISTICAS, tocar_som_estadio, TELA, clock
-from objetos import BolaBase, Goalkeeper, RecuperarCoracao
-from audio import som_tela_inicial, som_estadio, som_perda_vida, som_defesa, som_derrota
-from botao import botao_jogar, botao_sair, botao_reiniciar, botao_jogar_rect, botao_sair_rect, botao_reiniciar_rect, botao_sair_gameover_rect
-from designs import fundo_inicial, fundo_gameover, fundo_jogo, coracao, coracao_cinza, contadores, posicoes_coracoes
-
-
-
-
-
-def carregar_imagem(caminho, escala=None):
-    imagem = pygame.image.load(caminho).convert_alpha()
-    if escala:
-        return pygame.transform.scale(imagem, escala)
-    return imagem
+from objetos import *
+from configs import *
+from audio import *
+from designs import * 
 
 def tocar_som_tela_inicial():
     som_tela_inicial.play()
 def tocar_som_estadio():
     pygame.mixer.music.load(som_estadio)
-    pygame.mixer.music.play(-1)  # Loop infinito
+    pygame.mixer.music.play(-1) 
 def parar_som_estadio():
     pygame.mixer.music.stop()
 def tocar_som_perda_vida():
@@ -44,6 +33,7 @@ def tela_intermediaria():
                 return  
         TELA.blit(fundo_intermediario, (0, 0))
         pygame.display.flip()
+        return tela_intermediaria 
 
 def tela_gameover(bola1, bola2, bola3, coracao, score, tempo):
     rodando = True

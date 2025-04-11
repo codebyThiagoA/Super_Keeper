@@ -1,8 +1,7 @@
 from designs import carregar_imagem
 import random
-from main import LARGURA, ALTURA, TAMANHOS_FONTES, POSICOES_ESTATISTICAS, TELA, contadores
+from configs import LARGURA, ALTURA, TAMANHOS_FONTES, POSICOES_ESTATISTICAS, TELA, contadores
 import pygame
-
 
 
 # Classes

@@ -1,5 +1,11 @@
-from main import LARGURA, ALTURA, contadores
-from functions import carregar_imagem
+from configs import LARGURA, ALTURA, contadores
+import pygame
+
+def carregar_imagem(caminho, escala=None):
+    imagem = pygame.image.load(caminho).convert_alpha()
+    if escala:
+        return pygame.transform.scale(imagem, escala)
+    return imagem
 
 fundo_inicial = carregar_imagem("designs/Tela_inicial.png", (LARGURA, ALTURA))
 fundo_jogo = carregar_imagem("designs/Campo.png", (LARGURA, ALTURA))
@@ -15,3 +21,8 @@ contadores.update({
     'bola2_img': carregar_imagem("designs/Contador_bola2.png", (100, 40)),
     'bola3_img': carregar_imagem("designs/Contador_bola3.png", (100, 40)),
 })
+
+botao_jogar_rect = botao_jogar.get_rect(topleft=(20, 280))
+botao_sair_rect = botao_sair.get_rect(topleft=(20, 410))
+botao_reiniciar_rect = botao_reiniciar.get_rect(center=(LARGURA // 2, ALTURA // 2 + 200))
+botao_sair_gameover_rect = botao_sair.get_rect(center=(LARGURA // 2, ALTURA // 2 + 270))
