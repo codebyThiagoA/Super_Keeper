@@ -157,9 +157,9 @@ Pressione a tecla -> para que o goleiro se desloque para direita
 
 
 ## Desafios:
-    Na maior parte do tempo, tivemos dificuldade em reunir o que cada integrante havia feito e integrar tudo para que o código começasse a funcionar. Além disso, a organização também foi, de certa forma, um desafio no projeto, já que, conforme cada pessoa ia desenvolvendo sua parte, surgiram divergências sobre como o código deveria funcionar.
+Na maior parte do tempo, tivemos dificuldade em reunir o que cada integrante havia feito e integrar tudo para que o código começasse a funcionar. Além disso, a organização também foi, de certa forma, um desafio no projeto, já que, conforme cada pessoa ia desenvolvendo sua parte, surgiram divergências sobre como o código deveria funcionar.
 
-    Entre as problemáticas enfrentadas, um dos desafios mais frequentes foi o constante choque entre as diferentes formas que os integrantes usavam para implementar as funções do jogo. Por conta disso, o código precisou passar por manutenções constantes para que tudo se encaixasse em um padrão.
+Entre as problemáticas enfrentadas, um dos desafios mais frequentes foi o constante choque entre as diferentes formas que os integrantes usavam para implementar as funções do jogo. Por conta disso, o código precisou passar por manutenções constantes para que tudo se encaixasse em um padrão.
 
 
 ## Requisitos:
@@ -169,7 +169,7 @@ Pressione a tecla -> para que o goleiro se desloque para direita
 
 Este projeto foi realizado para disciplina de Introdução à Programação no CIn UFPE
 
-### No Super Keeper, cada defesa é uma vitória e cada segundo conta para se tornar uma lenda do gol.
+### No Super Keeper, cada defesa é uma vitória e cada segundo conta para se tornar uma lenda do gol!!!!
 
 
 
