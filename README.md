@@ -94,21 +94,52 @@ As decisões relacionadas à dinâmica do jogo, como a escolha do tema, da inter
 Detalhes técnicos:
 
 - Davi Peixoto Freire Falcao:
+    Desenvolver a interface gráfica do jogo;
+    Criou o design da tela inicial;
+    Criou o design dos botões;
+    Criou o design da tela Game Over;
+    Auxiliou nas correções do código.
 
 - Pedro Francisco da Costa Cavalcanti:
+    Coordenar as decisões gerais;
+    Participar e gerenciar o código de todos integrantes;
+    Criação do Notion;
+    Responsável pelo relatório;
+    Correções de código.
 
 - Hugo Kauan Leal Crasto:
+    Ajustes do Recursos;
+    Monitoramento do projeto;
+    Otimização do código sobre as colisões;
+    Revisão e otimização de algumas funções;
+    Comunicação do projeto.
+    
 
 - Felipe Costa Coutinho:
+    Criar as classes dos objetos;
+    Implementar a lógica de queda dos objetos;
+    Implementar a lógica de coleta dos objetos;
+    Desenvolver os contadores de coleta;
+    Criar a lógica de gerenciamento de vidas.
 
 - Thiago Bernardo de Paula Alves:
+    Desenvolver a classe do goleiro;
+    Desenvolver as movimentações;
+    Aplicar as animações básicas;
+    Auxilio no design da tela do jogo;
+    fez a arte do fundo do jogo.
 
 - Arthur de Sá Tenório:
+    Implementou o efeito sonoro de coleta;
+    Implementou o efeito sonoro de perda de vida;
+    Aplicou a trilha sonora de fundo;
+    Auxiliou no design das bolas;
+    Implemtou o efeito sonoro de Game Over.
 
 
 ## Controles
-Pressione a tecla A para que o goleiro se desloque para esquerda
-Pressione a tecla D para que o goleiro se desloque para direita
+Pressione a tecla <- para que o goleiro se desloque para esquerda
+Pressione a tecla -> para que o goleiro se desloque para direita
 
 ## Regras do Jogo:
 - O jogador inicia a partida com uma quantidade definida de vidas;
@@ -117,4 +148,28 @@ Pressione a tecla D para que o goleiro se desloque para direita
 - Os diferentes tipos de bola são registrados individualmente em contadores próprios;
 - Sempre que uma bola passa sem ser defendida, o jogador perde vida;
 - O desafio é somar o maior número de pontos possível antes de ficar sem vidas.
+
+
+## Como Jogar:
+- Execute o arquivo main.py.
+- Use as teclas <- e -> para movimentação.
+- Colete o máximo de bolas possível para ganhar pontos e evitar a perda de vidas.
+
+
+## Desafios:
+    Na maior parte do tempo, tivemos dificuldade em reunir o que cada integrante havia feito e integrar tudo para que o código começasse a funcionar. Além disso, a organização também foi, de certa forma, um desafio no projeto, já que, conforme cada pessoa ia desenvolvendo sua parte, surgiram divergências sobre como o código deveria funcionar.
+
+    Entre as problemáticas enfrentadas, um dos desafios mais frequentes foi o constante choque entre as diferentes formas que os integrantes usavam para implementar as funções do jogo. Por conta disso, o código precisou passar por manutenções constantes para que tudo se encaixasse em um padrão.
+
+
+## Requisitos:
+- Python 3.x
+- Pygame (você pode instalá-lo com 'pip install pygame')
+
+
+Este projeto foi realizado para disciplina de Introdução à Programação no CIn UFPE
+
+### No Super Keeper, cada defesa é uma vitória e cada segundo conta para se tornar uma lenda do gol.
+
+
 
