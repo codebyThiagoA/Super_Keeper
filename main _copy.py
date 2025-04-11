@@ -1,21 +1,45 @@
+# coding: utf-8
 import pygame
+import pygame as pg
 import time
-import random  
-from main import LARGURA, ALTURA, TAMANHOS_FONTES, POSICOES_ESTATISTICAS, tocar_som_estadio, TELA, clock
-from objetos import BolaBase, Goalkeeper, RecuperarCoracao
-from audio import som_tela_inicial, som_estadio, som_perda_vida, som_defesa, som_derrota
-from botao import botao_jogar, botao_sair, botao_reiniciar, botao_jogar_rect, botao_sair_rect, botao_reiniciar_rect, botao_sair_gameover_rect
-from designs import fundo_inicial, fundo_gameover, fundo_jogo, coracao, coracao_cinza, contadores, posicoes_coracoes
+import random
+import sys
 
+pygame.init()
 
+# Configurações da tela
+LARGURA, ALTURA = 800, 700
+TELA = pygame.display.set_mode((LARGURA, ALTURA))
+pygame.display.set_caption("Super Keeper")
+clock = pygame.time.Clock()
 
+# Constantes
+POSICOES_ESTATISTICAS = {
+    'bola1': (250, 480), 'bola2': (379, 480), 'bola3': (505, 480), 'coracao': (615, 480), 
+    'tempo': (370, 400), 'score': (590, 400), 'total': (465, 300)
+}
+TAMANHOS_FONTES = {'total_bolas': 70, 'tempo/score': 60, 'bolas': 45, 'coracao': 45}
+posicoes_coracoes = [(650, 105), (675, 105), (700, 105), (725, 105), (750, 105)]
+contadores = {
+    'posicoes': {
+        'bola1': (10, 15), 'bola2': (10, 60), 'bola3': (10, 105),
+        'score': (665, 70), 'timer': (665, 15)
+    }
+}
 
-
+# Carregamento de imagens
 def carregar_imagem(caminho, escala=None):
     imagem = pygame.image.load(caminho).convert_alpha()
     if escala:
         return pygame.transform.scale(imagem, escala)
     return imagem
+
+som_tela_inicial = pygame.mixer.Sound('audio/som_tela_inicial.wav')
+som_estadio = 'audio/som_estadio.mp3'
+som_perda_vida = pygame.mixer.Sound('audio/som_perda_vida.wav')
+som_defesa = pygame.mixer.Sound('audio/som_defesa.wav')
+som_derrota = pygame.mixer.Sound('audio/som_derrota.wav')
+
 
 def tocar_som_tela_inicial():
     som_tela_inicial.play()
@@ -31,6 +55,133 @@ def tocar_som_defesa():
 def tocar_som_derrota():
     som_derrota.play()
 
+    
+fundo_inicial = carregar_imagem("designs/Tela_inicial.png", (LARGURA, ALTURA))
+fundo_jogo = carregar_imagem("designs/Campo.png", (LARGURA, ALTURA))
+fundo_gameover = carregar_imagem("designs/gameover.png", (LARGURA, ALTURA))
+botao_jogar = carregar_imagem("designs/Botao_jogar.png")
+botao_sair = carregar_imagem("designs/Botao_sair.png")
+botao_reiniciar = carregar_imagem("designs/Botao_jogar_novamente.png")
+coracao = carregar_imagem("designs/Coracao.png", (30, 30))
+coracao_cinza = carregar_imagem("designs/Coracao_perdido.png", (30, 30))
+contadores.update({
+    'timer_img': carregar_imagem("designs/Relogio.png", (100, 40)),
+    'bola1_img': carregar_imagem("designs/Contador_bola1.png", (100, 40)),
+    'bola2_img': carregar_imagem("designs/Contador_bola2.png", (100, 40)),
+    'bola3_img': carregar_imagem("designs/Contador_bola3.png", (100, 40)),
+})
+
+# Retângulos dos botões
+botao_jogar_rect = botao_jogar.get_rect(topleft=(20, 280))
+botao_sair_rect = botao_sair.get_rect(topleft=(20, 410))
+botao_reiniciar_rect = botao_reiniciar.get_rect(center=(LARGURA // 2, ALTURA // 2 + 200))
+botao_sair_gameover_rect = botao_sair.get_rect(center=(LARGURA // 2, ALTURA // 2 + 270))
+
+# Classes
+class BolaBase:
+    def __init__(self, velocidade_base, dano, intervalo_base, imagem_path):
+        self.v_base = velocidade_base
+        self.dano = dano
+        self.intervalo_base = intervalo_base
+        self.timer = 0
+        self.bolas = []
+        self.img = carregar_imagem(imagem_path, (60, 60))
+
+    def velocidade_atual(self, pontos):
+        return self.v_base + (self.v_base * pontos / 150)
+
+    def intervalo_atual(self, pontos):
+        return max(10, int(self.intervalo_base - (pontos / 10)))
+
+    def spawn(self):
+        rect = self.img.get_rect()
+        rect.x = random.randint(0, LARGURA - rect.width)
+        rect.y = -rect.height
+        return {"img": self.img, "rect": rect, "tipo": self}
+
+    def atualizar(self, pontos):
+        self.timer += 1
+        dano_causado = 0
+        if self.timer >= self.intervalo_atual(pontos):
+            self.bolas.append(self.spawn())
+            self.timer = 0
+        novas_bolas = []
+        for b in self.bolas:
+            b["rect"].y += self.velocidade_atual(pontos)
+            if b["rect"].top <= ALTURA:
+                novas_bolas.append(b)
+            else:
+                dano_causado += self.dano
+        self.bolas = novas_bolas
+        return dano_causado
+
+    def desenhar(self, tela):
+        for b in self.bolas:
+            tela.blit(b["img"], b["rect"])
+
+class Goalkeeper:
+    def __init__(self, posicao_x, posicao_y, speed, width, imagem_path):
+        self.posicao_x = posicao_x
+        self.posicao_y = posicao_y
+        self.speed = speed
+        self.width = width
+        self.lives = 5
+        self.img = carregar_imagem(imagem_path, (self.width, 100))
+
+    @property
+    def x(self):
+        return self.posicao_x
+
+    @property
+    def y(self):
+        return self.posicao_y
+
+    def move(self, keys, screen_width):
+        if keys[pygame.K_RIGHT] and self.x < screen_width - self.width:
+            self.posicao_x += self.speed
+        if keys[pygame.K_LEFT] and self.x > 0:
+            self.posicao_x -= self.speed
+
+    def check_collision(self, ball_rect):
+        goalkeeper_rect = pygame.Rect(self.x, self.y, self.width, 100)
+        return goalkeeper_rect.colliderect(ball_rect)
+    
+class RecuperarCoracao:
+    def __init__(self, velocidade_base, intervalo_base, imagem_path):
+        self.v_base = velocidade_base
+        self.intervalo_base = intervalo_base
+        self.timer = 0
+        self.coracoes = []
+        self.img = carregar_imagem(imagem_path, (40, 40))  # Ajuste o tamanho conforme necessário
+
+    def velocidade_atual(self, pontos):
+        return self.v_base + (self.v_base * pontos / 150)
+
+    def intervalo_atual(self, pontos):
+        return max(10, int(self.intervalo_base - (pontos / 10)))
+
+    def spawn(self):
+        rect = self.img.get_rect()
+        rect.x = random.randint(0, LARGURA - rect.width)
+        rect.y = -rect.height
+        return {"img": self.img, "rect": rect}
+
+    def atualizar(self, pontos):
+        self.timer += 1
+        if self.timer >= self.intervalo_atual(pontos):
+            self.coracoes.append(self.spawn())
+            self.timer = 0
+        novas_coracoes = []
+        for c in self.coracoes:
+            c["rect"].y += self.velocidade_atual(pontos)
+            if c["rect"].top <= ALTURA:
+                novas_coracoes.append(c)
+        self.coracoes = novas_coracoes
+
+    def desenhar(self, tela):
+        for c in self.coracoes:
+            tela.blit(c["img"], c["rect"])
+
 def tela_intermediaria():
     fundo_intermediario = carregar_imagem("designs/Tela_intermediaria.png", (LARGURA, ALTURA))
     while True:
@@ -41,10 +192,11 @@ def tela_intermediaria():
                 pygame.quit()
                 return
             if evento.type == pygame.KEYDOWN and evento.key == pygame.K_SPACE:
-                return  
+                return  # Sai da tela intermediária e continua para o jogo
         TELA.blit(fundo_intermediario, (0, 0))
         pygame.display.flip()
 
+# Funções de tela
 def tela_gameover(bola1, bola2, bola3, coracao, score, tempo):
     rodando = True
     fonte_total_bolas = pygame.font.Font(None, TAMANHOS_FONTES['total_bolas'])
@@ -122,23 +274,25 @@ def tela_jogo():
                         estado['bola3'] += 1
             dano_total += bola.atualizar(estado['pontos'])
 
+        # Atualizar e verificar colisão com corações
         recuperar_coracao.atualizar(estado['pontos'])
         for c in recuperar_coracao.coracoes[:]:
             if goalkeeper.check_collision(c["rect"]):
-                if estado['vidas'] < 5:  
+                if estado['vidas'] < 5:  # Limite máximo de vidas
                     estado['vidas'] += 1
                     coracoes_visiveis[estado['vidas'] - 1] = True
                     estado['coracao'] += 1
-                    pygame.mixer.Sound('audio/som_ganhar vida.wav').play()
+                    # Tocar som de ganhar vida]
+                    pygame.mixer.Sound('audio/som_ganhar vida.wav').play() # Tocar som de ganhar vida
                 recuperar_coracao.coracoes.remove(c)
 
         if dano_total > 0:
-            tocar_som_perda_vida()  
+            tocar_som_perda_vida()  # Tocar som de perda de vida
 
         estado['vidas'] -= dano_total
         if estado['vidas'] <= 0:
-            tocar_som_derrota()  
-            parar_som_estadio()  
+            tocar_som_derrota()  # Tocar som de derrota
+            parar_som_estadio()  # Parar o som do estádio ao sair da tela de jogo
             tela_gameover(estado['bola1'], estado['bola2'], estado['bola3'],estado['coracao'], estado['pontos'], tempo_atual)
             return
         for i in range(5):
@@ -147,7 +301,7 @@ def tela_jogo():
         TELA.blit(fundo_jogo, (0, 0))
         for bola in bolas:
             bola.desenhar(TELA)
-        recuperar_coracao.desenhar(TELA)  
+        recuperar_coracao.desenhar(TELA)  # Desenhar os corações
         TELA.blit(goalkeeper.img, (goalkeeper.x, goalkeeper.y))
         for i, pos in enumerate(posicoes_coracoes):
             TELA.blit(coracao if coracoes_visiveis[i] else coracao_cinza, pos)
@@ -174,26 +328,29 @@ def tela_jogo():
         clock.tick(60)
 
 def tela_inicial():
-    som_tocou = False  
+    som_tocou = False  # Variável para controlar se o som já foi tocado
     while True:
         for evento in pygame.event.get():
             if not som_tocou:
-                tocar_som_tela_inicial() 
+                tocar_som_tela_inicial()  # Toca o som da tela inicial apenas uma vez
                 som_tocou = True
             if evento.type == pygame.QUIT:
-                pygame.mixer.stop()  
+                pygame.mixer.stop()  # Para todos os sons
                 pygame.quit()
                 return
             if evento.type == pygame.MOUSEBUTTONDOWN:
                 if botao_jogar_rect.collidepoint(evento.pos):
-                    pygame.mixer.stop() 
-                    tela_intermediaria() 
-                    tela_jogo()  
+                    pygame.mixer.stop()  # Para o som ao iniciar o jogo
+                    tela_intermediaria()  # Chama a tela intermediária
+                    tela_jogo()  # Inicia o jogo
                 if botao_sair_rect.collidepoint(evento.pos):
-                    pygame.mixer.stop()  
+                    pygame.mixer.stop()  # Para o som ao sair
                     pygame.quit()
                     return
         TELA.blit(fundo_inicial, (0, 0))
         TELA.blit(botao_jogar, botao_jogar_rect)
         TELA.blit(botao_sair, botao_sair_rect)
         pygame.display.flip()
+
+if __name__ == "__main__":
+    tela_inicial()
