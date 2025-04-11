@@ -1,5 +1,5 @@
 import pygame
-from side import tela_inicial
+from codigo.side import tela_inicial
 
 pygame.init()
 pygame.mixer.init()
