@@ -19,13 +19,13 @@ Super Keeper é um jogo 2D feito em Python usando a biblioteca Pygame. A missão
 
 ## Capturas de Tela
 ### Tela inicial do jogo
-![Tela de inicio](https://github.com/codebyThiagoA/Super_Keeper/blob/Merge-/designs/Tela_inicial.png?raw=true)
+![Tela de inicio](https://github.com/codebyThiagoA/Super_Keeper/blob/Merge-/designs/Demonstra%C3%A7%C3%A3o_tela_inicial.png?raw=true)
 
 ### Jogabilidade
-![Jogo](https://github.com/julianatalita/projetoIP/assets/136331050/1d3c6e4f-0ccb-46a3-9f5d-509af66a25e2)
+![Jogo](https://github.com/codebyThiagoA/Super_Keeper/blob/Merge-/designs/Demonstra%C3%A7%C3%A3o_tela_de_jogo.png?raw=true)
 
 ### Tela final do jogo
-![Tela Final](https://github.com/julianatalita/projetoIP/assets/136331050/00f035f2-3aba-44fb-8ab1-9fc5562123dd)
+![Tela Final](https://github.com/codebyThiagoA/Super_Keeper/blob/Merge-/designs/Demonstra%C3%A7%C3%A3o_tela_gameover.png?raw=true)
 
 
 
