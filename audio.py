@@ -11,7 +11,7 @@ def tocar_som_tela_inicial():
     som_tela_inicial.play()
 def tocar_som_estadio():
     pygame.mixer.music.load(som_estadio)
-    pygame.mixer.music.play(-1)  # Loop infinito
+    pygame.mixer.music.play(-1)  
 def parar_som_estadio():
     pygame.mixer.music.stop()
 def tocar_som_perda_vida():

@@ -1,13 +1,10 @@
 import pygame
 
-
-# Configurações da tela
 LARGURA, ALTURA = 800, 700
 TELA = pygame.display.set_mode((LARGURA, ALTURA))
 pygame.display.set_caption("Super Keeper")
 clock = pygame.time.Clock()
 
-# Constantes
 POSICOES_ESTATISTICAS = {
     'bola1': (250, 480), 'bola2': (379, 480), 'bola3': (505, 480), 'coracao': (615, 480), 
     'tempo': (370, 400), 'score': (590, 400), 'total': (465, 300)

@@ -1,7 +1,6 @@
 import pygame
 from configs import LARGURA, ALTURA, TELA, POSICOES_ESTATISTICAS, TAMANHOS_FONTES, posicoes_coracoes, contadores
 
-
 def carregar_imagem(caminho, escala=None):
     imagem = pygame.image.load(caminho).convert_alpha()
     if escala:
