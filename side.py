@@ -4,72 +4,12 @@ import pygame as pg
 import time
 import random
 import sys
+from configs import *
+from designs import *
+from audio import *
+from functions import *
 
 pygame.init()
-
-# Configurações da tela
-LARGURA, ALTURA = 800, 700
-TELA = pygame.display.set_mode((LARGURA, ALTURA))
-pygame.display.set_caption("Super Keeper")
-clock = pygame.time.Clock()
-
-# Constantes
-POSICOES_ESTATISTICAS = {
-    'bola1': (250, 480), 'bola2': (379, 480), 'bola3': (505, 480), 'coracao': (615, 480), 
-    'tempo': (370, 400), 'score': (590, 400), 'total': (465, 300)
-}
-TAMANHOS_FONTES = {'total_bolas': 70, 'tempo/score': 60, 'bolas': 45, 'coracao': 45}
-posicoes_coracoes = [(650, 105), (675, 105), (700, 105), (725, 105), (750, 105)]
-contadores = {
-    'posicoes': {
-        'bola1': (10, 15), 'bola2': (10, 60), 'bola3': (10, 105),
-        'score': (665, 70), 'timer': (665, 15)
-    }
-}
-
-# Carregamento de imagens
-def carregar_imagem(caminho, escala=None):
-    imagem = pygame.image.load(caminho).convert_alpha()
-    if escala:
-        return pygame.transform.scale(imagem, escala)
-    return imagem
-
-som_tela_inicial = pygame.mixer.Sound('audio/som_tela_inicial.wav')
-som_estadio = 'audio/som_estadio.mp3'
-som_perda_vida = pygame.mixer.Sound('audio/som_perda_vida.wav')
-som_defesa = pygame.mixer.Sound('audio/som_defesa.wav')
-som_derrota = pygame.mixer.Sound('audio/som_derrota.wav')
-
-
-def tocar_som_tela_inicial():
-    som_tela_inicial.play()
-def tocar_som_estadio():
-    pygame.mixer.music.load(som_estadio)
-    pygame.mixer.music.play(-1)  # Loop infinito
-def parar_som_estadio():
-    pygame.mixer.music.stop()
-def tocar_som_perda_vida():
-    som_perda_vida.play()
-def tocar_som_defesa():
-    som_defesa.play()
-def tocar_som_derrota():
-    som_derrota.play()
-
-    
-fundo_inicial = carregar_imagem("designs/Tela_inicial.png", (LARGURA, ALTURA))
-fundo_jogo = carregar_imagem("designs/Campo.png", (LARGURA, ALTURA))
-fundo_gameover = carregar_imagem("designs/gameover.png", (LARGURA, ALTURA))
-botao_jogar = carregar_imagem("designs/Botao_jogar.png")
-botao_sair = carregar_imagem("designs/Botao_sair.png")
-botao_reiniciar = carregar_imagem("designs/Botao_jogar_novamente.png")
-coracao = carregar_imagem("designs/Coracao.png", (30, 30))
-coracao_cinza = carregar_imagem("designs/Coracao_perdido.png", (30, 30))
-contadores.update({
-    'timer_img': carregar_imagem("designs/Relogio.png", (100, 40)),
-    'bola1_img': carregar_imagem("designs/Contador_bola1.png", (100, 40)),
-    'bola2_img': carregar_imagem("designs/Contador_bola2.png", (100, 40)),
-    'bola3_img': carregar_imagem("designs/Contador_bola3.png", (100, 40)),
-})
 
 # Retângulos dos botões
 botao_jogar_rect = botao_jogar.get_rect(topleft=(20, 280))
@@ -182,19 +122,7 @@ class RecuperarCoracao:
         for c in self.coracoes:
             tela.blit(c["img"], c["rect"])
 
-def tela_intermediaria():
-    fundo_intermediario = carregar_imagem("designs/Tela_intermediaria.png", (LARGURA, ALTURA))
-    while True:
-        for evento in pygame.event.get():
-            pygame.mixer.music.set_volume(0.67) 
-            tocar_som_estadio()
-            if evento.type == pygame.QUIT:
-                pygame.quit()
-                return
-            if evento.type == pygame.KEYDOWN and evento.key == pygame.K_SPACE:
-                return  # Sai da tela intermediária e continua para o jogo
-        TELA.blit(fundo_intermediario, (0, 0))
-        pygame.display.flip()
+tela_intermediaria()
 
 # Funções de tela
 def tela_gameover(bola1, bola2, bola3, coracao, score, tempo):
